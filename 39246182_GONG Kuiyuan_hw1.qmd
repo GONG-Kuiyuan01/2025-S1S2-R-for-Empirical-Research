@@ -1,0 +1,99 @@
+---
+format: pdf
+---
+
+Homework 1
+
+Full name: GONG Kuiyuan
+
+Preferred name: Eddie
+
+ID: 39-246182
+
+# Introduction
+
+My name is GONG Kuiyuan. I come from China and I probably come from a very different department from other students, which is the Department of Agricultural and Resource Economics. The reason why I choose to take this course is to confront the kind of "fear" of coding and programming in my mind because I have been using Stata ever since I entered university. Yes, I am the spoiled kid who uses Stata a lot! During the winter break, I tried to learn LaTex myself and found that coding wasn't that scary, which is the tipping point that makes me here. Therefore, I really hope that I can learn and master a lot from this course.
+
+Here is a photo of me:
+
+![](images/GONG%20Kuiyuan.jpg){width="234"}
+
+Please check out the location of [my hometown](https://en.wikipedia.org/wiki/Zhongshan){target="_blank"} and [my Linkedin](https://x.com/chiitan7407?lang=en){target="_blank"} page (even though there is nothing here).
+
+## My hometown
+
+My hometown is located in the South China. This city is small compared with other cities in China. The fun fact is that my hometown was named by a very famous politician who was born there and named "Sun Yat-sen", my hometown wouldn’t have become a city but a county if it weren’t for him.
+
+## What I want to learn
+
+-   The correct way of data cleaning and processing. I have been using Excel and Stata to process my data, but those steps were barely recorded. I want to make eveything more transparent.
+
+-   I heard that R is also quite similar with Python and I am learning these two languages at the same time. I hope this course can help to foster a sort of mentality of coding that I can apply to other computer language.
+
+-   Using terminals to manipulate R and Python seems to be very cool for me. Therefore, I truly expect to also learn something about the use of terminals like VS code.
+
+Homework tasks
+
+1.  Include a photo of yourself (instead of chiitan). **Finished!**
+
+2.  Write an introduction of yourself and explain why you are interested in the course. **Finished!**
+
+3.  Write a small description of where you are from and include a link to your hometown either on Wikipedia or Google maps (or both!). **Finished!**
+
+4.  Uses `-` to make a list of 3 things you hope to learn in this course. **Finished!**
+
+5.  Write a bit of R code: define a variable, print it, etc. Anything. Just get some practice including R code in your homework. **Finished!**
+
+To compile your quarto document, you need to install package `quarto` and then you compile your `.qmd` file using the `quarto_render()` function. Be sure to follow the specified file naming convention.
+
+# More practice
+
+An example quarto document. This is my thesis. My research question is blah, blah, blah. There is a relationship between `mpg` and `disp`.
+
+```         
+lm(mpg ~ disp,dplyr::filter(mtcars,mpg!=8))
+```
+
+Use a blank link between paragraphs. You can use a bit of **bold** or *italics*.
+
+Use backticks to indicate `code` that will be rendered in monospace.
+
+Here's a list:
+
+-   an item in the list
+-   another item
+-   yet another item
+
+You can add latex to write equations. $$
+y_i = \alpha_0 + \beta_0X_i + \beta_1 Contol_i + \epsilon_i
+$$
+
+You can include blocks of code using three backticks:
+
+```{r}
+n <- 200
+x <- 1000
+x*n
+
+y <- x*n
+length(y)
+
+s <- c(n, x, y)
+length(s)
+
+s <- s/2
+print(s)
+```
+
+You can also include inline code say the mean of `x`, `r mean(x)`, or the length --\> of `x`, `r length(x)`. If you add an `r` to the beginning of the backticks it will actually run the code, otherwise it just puts it in code case.
+
+`r mean(x)` `r length(x)` `r x*y`
+
+It'll figure out numbered lists, too:
+
+1.  First item
+2.  Second item
+
+And it's easy to create links, like to a list of [CRAN Packages](https://cran.r-project.org/web/packages/available_packages_by_name.html){target="_blank"}.
+
+\Large [***This will be the end of Homework 1.***]{.underline}
