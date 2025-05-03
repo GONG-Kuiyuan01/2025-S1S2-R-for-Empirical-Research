@@ -1,0 +1,125 @@
+---
+title: "Homework 4"
+format: pdf
+author: "GONG Kuiyuan"
+---
+
+Student ID: 39-246182
+
+Student name: GONG Kuiyuan
+
+Preferred name: Eddie
+
+## Answers:
+
+**Task 1**: We normally use the code `install.packages()` to download the package that we want. However, it shouldn't be written into the Rscript or Quarto file because the line of code gets to run everytime when we run the entire file. The problem here is twofold. Firstly, the console will report `Error` if the package is already uploaded. Secondly, if we are downloading packages from the Github, there may be a rate limit of package download per hour. People wouldn't be able to download the packages as long as it hits the limit.
+
+The `p_load()` is better because it helps to check the download status of the package. If it is installed and automatically installs it if it isn’t, then loads it. It avoids reinstalling a package that is already loaded.
+
+```{r}
+#install.packages("palmerpenguins")
+
+library(pacman)
+p_load(palmerpenguins)
+```
+
+**Task 2**: We typically use `?` to check the documentation of a package or function. So, for this package, it includes the size measurements, clutch observations, and blood isotope ratios for adult foraging Adélie, Chinstrap, and Gentoo penguins observed on islands in the Palmer Archipelago near Palmer Station, Antarctica. Additionally, we can also find other information including the *authors* and *useful links*.
+
+We can use `str(penguins)` to describe the data type of each variable.
+
+```{r}
+?palmerpenguins
+
+names(penguins)
+str(penguins)
+#summary(penguins) This is helpful to get descriptive statistics.
+```
+
+**Task 3**: We can use the verb "rename" to change the names of variables. We can also combine it together with pipe to make the process clearer to follow.
+
+```{r}
+names(penguins)
+library(dplyr)
+
+# Using dplyr verb 'rename'.
+penguins_processed <- rename(penguins, body_mass = body_mass_g)
+names(penguins_processed)
+
+# Using 'pipe'.
+penguins_processed <- penguins_processed |>
+  rename(bill_length = bill_length_mm) |>
+  rename(bill_depth = bill_depth_mm) |>
+  rename(flipper_length = flipper_length_mm)
+
+names(penguins_processed)
+```
+
+**Task 4**:
+
+```{r}
+p_load(griffen, griffendata)
+names(mini_cps)
+
+if_else(c("white", "black", "black") == "black", 1, 0)
+if_else(mini_cps$race == "black", 1, 0)
+# We can also apply this to mini_cps data.
+```
+
+**Task 5**:
+
+```{r}
+penguins_processed <- penguins_processed |>
+  mutate (dummy_1 = if_else(body_mass > 5000, 1, 0))
+
+penguins_processed$dummy_1
+```
+
+**Task 6**:
+
+```{r}
+
+penguins_processed <- penguins_processed |>
+  left(dummy_1)
+
+names(penguins_processed)
+```
+
+**Task 7**: Since we have made a dummy, we can easily get the percentage by calculating the mean of the dummy variable and its product with 100. The final result is 17.83626%.
+
+```{r}
+penguins_processed |>
+  summarise(percentage_weight = mean(dummy_1) * 100)
+```
+
+**Task 8**: Yes, the result is different, where we can find that only some penguins that come from Biscoe island have a weight over 5000 grams, which is 36.5% of the total population. Penguins come from Dream island and Torgersen island are generally smaller than 5000 grams.
+
+```{r}
+penguins_processed |>
+  group_by(island) |>
+  summarise(percentage_weight = mean(dummy_1) * 100)
+
+```
+
+**Task 9**: Yes, Sexual dimorphism is true given that the average weight of females are smaller than males. On the other hand, the species of penguins have very different average weight as well. We observe that *Gentoo* penguins have the biggest size and the other two are similar.
+
+```{r}
+penguins_processed |>
+  group_by(sex) |>
+  summarise(mean_body_mass = mean(body_mass))
+
+penguins_processed |>
+  group_by(species) |>
+  summarise(mean_body_mass = mean(body_mass))
+  
+```
+
+**Task 10**: Note that `dataFrame` here could be any data frame that contains `body_mass` and `sex`. This function allows us to pass data frame as an argument and get the results.
+
+```{r}
+
+regression <- function(dataFrame){
+  lm (body_mass ~ sex, dataFrame)
+}
+
+regression(penguins_processed)
+```
