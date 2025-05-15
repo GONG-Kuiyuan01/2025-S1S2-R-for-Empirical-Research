@@ -1,0 +1,149 @@
+---
+title: "Homework 5"
+format: pdf
+author: "GONG Kuiyuan"
+---
+
+Student ID: 39-246182
+
+Student name: GONG Kuiyuan
+
+Preferred name: Eddie
+
+## Answers:
+
+**Task 1**: Note that `dataFrame` here could be any data frame that contains `body_mass_g` and `sex`. This function allows us to pass any data frame as an argument and get the results.
+
+```{r}
+library(pacman)
+p_load(palmerpenguins)
+
+regression <- function(dataFrame){
+  lm (body_mass_g ~ sex, dataFrame)
+}
+
+regression(penguins)
+```
+
+**Task 2**: We first make sure to load all the packages that we need for operations. `names()` could help us to check the variables in the data. `mutate()` is used to generate new variables and I choose to keep the original data and store the change in `penguins2`.
+
+```{r}
+library(pacman)
+p_load(tidyverse)
+
+library(pacman)
+p_load(griffen, griffendata)
+
+names(penguins)
+
+penguins2 <- penguins |>
+  mutate(new_var = body_mass_g/flipper_length_mm)
+
+penguins2 |> select(new_var)
+```
+
+**Task 3**: In this case, `relocate()` and `left()` that is from the `griffen` package could do the same job to move the new variable to the front. In the Method 2, I demonstrate the optional operation that can change the position of new variable within the `mutate()` function.
+
+```{r}
+library(pacman)
+p_load(palmerpenguins)
+#Method 1
+penguins2 <- penguins |>
+  mutate(new_var = body_mass_g/flipper_length_mm) |>
+  left(new_var) #this is from the package 'griffen'
+  #relocate(new_var, .before = species)
+
+#Method 2
+penguins2 <- penguins |>
+  mutate(new_var = body_mass_g/flipper_length_mm, .before=1)
+  #mutate(new_var = body_mass_g/flipper_length_mm, .before=species)
+
+names(penguins2)
+```
+
+**Task 4**: For this question, we can first use `distinct()` to check the value and names of variables, `print()` or `print_all()` could be used to print out the data.frame. The new variable is named as `mass_flipper`. We want to make the name clear and could be easily understood by other people who may use the data later. We often keep variable names concise but meaningful.
+
+```{r}
+penguins2 <- penguins2 |> 
+  distinct()|>
+  rename(mass_flipper = new_var) |>
+  print()
+  #print_all()
+
+#penguins2 |> distinct(mass_flipper, species)
+```
+
+**Task 5**:
+
+```{r}
+penguins2 |>
+  group_by(species) |>
+  summarise(mean_mass_flipper = mean(mass_flipper))
+```
+
+**Task 6**: According to the results, we can find that *Chinstrap* penguins have the smallest average value and *Gentoo* penguins have the largest average value. *Adelie* penguins are in the middle.
+
+**Task 7**: I demonstrate how to use `rename()` function to change the name of variable and save it to the data.frame.
+
+```{r}
+penguins2 <- penguins2 |>
+  rename(mass_flipper2 = mass_flipper)
+```
+
+**Task 8**:
+
+```{r}
+print(penguins2)
+#Alternatively, we can finish these two steps together with the pipe
+#penguins2 <- penguins2 |>
+  #rename(mass_flipper2 = mass_flipper) |>
+  #print()
+```
+
+**Task 9**: We find that "species" "island" "sex" are factor variables.
+
+```{r}
+penguins2 |> 
+  summarise(
+    across(
+      where(is.factor)
+      )
+  )
+
+#Alternatively, we can also do this, put `names()` can return only the names.
+penguins2 |>
+  select(where(is.factor)) |>
+  names()
+```
+
+**Task 10**: The following shows the levels of each variable. I use `is.ordered()` to test where they are ordered. The result says it is not but these three variables are ordered based on the first letter's alphabetical order.
+
+```{r}
+levels(penguins2$species)
+is.ordered(penguins2$species)
+
+levels(penguins2$island)
+is.ordered(penguins2$island)
+
+levels(penguins2$sex)
+is.ordered(penguins2$sex)
+```
+
+**Task 11**: I used two functions here to operate this. They are `mutate()` and `factor()`. The first one allows us to change variables in the data.frame and the second one is used to change the order in `sex`.
+
+```{r}
+penguins2 <- penguins2 |>
+  mutate(sex = factor(sex, levels = c('male', 'female')))
+
+levels(penguins2$sex)
+```
+
+**Task 12**: After we change the order of `sex`, the coefficient turns into the exact opposite of the former one. Previously, the intercept and coefficient were 3862.3 and 683.4. Now, the intercept and coefficient are 4545.7 and -683.4.
+
+```{r}
+regression <- function(dataFrame){
+  lm (body_mass_g ~ sex, dataFrame)
+}
+
+regression(penguins2)
+```
