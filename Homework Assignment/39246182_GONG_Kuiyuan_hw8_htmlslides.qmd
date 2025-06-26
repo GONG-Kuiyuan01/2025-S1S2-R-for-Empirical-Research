@@ -1,0 +1,15 @@
+---
+title: "HW8_htmlslides"
+author: "GONG Kuiyuan"
+format: 
+  revealjs:
+    theme: simple
+    menu: false
+    progress: false
+    slide-number: true
+    transition: fade
+    center: true
+---
+## Showing the file `clark.png`
+
+![Clark](clark.png)
