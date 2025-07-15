@@ -1,0 +1,120 @@
+---
+title: "Homework 9"
+format: pdf
+author: "GONG Kuiyuan"
+---
+Student ID: 39-246182
+
+Student name: GONG Kuiyuan
+
+Preferred name: Eddie
+
+## Answers:
+
+**Task 1**:
+```{r}
+library(pacman)
+p_load(griffen, griffendata, ggplot2, ggmap, tidyverse, ggthemes, sf, scales, geomtextpath, gapminder, broom)
+
+japan_prefecture <- read.csv("/Users/edisonkung/Desktop/R for empirical research/HW/japan_prefectures.csv")
+print(japan_prefecture)
+```
+
+**Task 2**:
+```{r}
+japan_prefecture <- japan_prefecture |>
+  rename(prefecture = Prefecture) |>
+  arrange(prefecture) |>
+  mutate(Visited = if_else(Visited, "Yes", "No"))
+
+japan_sf_merge <- japan_sf |>
+  left_join(japan_prefecture, by = "prefecture")  |>
+  print()
+```
+
+**Task 3**:
+```{r}
+visited_prefecture <- japan_sf_merge |>
+  ggplot(
+    aes(fill = Visited)
+  ) +
+  geom_sf() +
+  scale_fill_manual(values = c("Yes" = "#e31a1c", "No" = "#1f78b4")) 
+
+visited_prefecture
+```
+
+**Task 4**:
+```{r}
+visited_prefecture <- visited_prefecture +
+  labs(
+    title = "The prefectures that I visited",
+    subtitle = "In fact, I didn't travel that many prefectures",
+    caption = "I hope to travel in the future"
+  )
+
+visited_prefecture
+```
+
+**Task 5**:
+```{r}
+visited_prefecture <- visited_prefecture +
+  geom_sf_text(
+    aes(label = prefecture),
+    size = 1
+  ) +
+  theme_tufte()
+
+visited_prefecture
+```
+
+**Task 6**:
+```{r}
+growth <- function(df) {
+  model <- lm(log(gdpPercap) ~ year, df)
+  return(model)
+}
+
+gapminder_nested <- gapminder |>
+  group_by(country) |>
+  nest() |>
+  mutate(model = map(data, growth)) |>
+  mutate(tidy_model = map(model, tidy, conf.int = TRUE)) |>
+  select(-data, -model) |>
+  unnest(cols = c("tidy_model")) |>
+  filter(term == "year") |>
+  left_join(gapminder |> select(country, continent) |> distinct(), by = "country") |>
+  filter(continent != "Oceania") |>
+  group_by(continent) |>
+  arrange(estimate, .by_group = TRUE) |>
+  mutate(country = factor(country, levels = country)) |>
+  mutate(continent = factor(continent, levels = c("Asia", "Europe", "Americas", "Africa")))
+```
+
+::: {.landscape}
+
+```{r}
+#| fig-width: 6
+#| fig-height: 6
+gapminder_plot <- gapminder_nested |>
+  ggplot(
+    aes(x = estimate, y = country, color = country)
+  ) +
+  geom_point(show.legend = FALSE) +
+  facet_wrap(~continent, scales = "free_y") +
+  scale_x_continuous(labels = percent_format()) +
+  theme_tufte() +
+  scale_color_manual(values = country_colors) +
+  geom_segment(aes(x = conf.low, xend = conf.high, y = country, yend = country), show.legend = FALSE) +
+  geom_vline(xintercept = 0) +
+  labs(
+    x = "Growth rate",
+    y = NULL,
+    title = "Annual growth in per capita gdp",
+    subtitle = "1952 − 2007",
+    caption = "Source: Gapminder data, bars represent 95% confidence intervals, zero growth highlighted with black line."
+  )
+  
+print(gapminder_plot)
+```
+:::

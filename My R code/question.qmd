@@ -1,0 +1,13 @@
+---
+title: "question "
+format: pdf
+---
+
+```{r}
+x <- 1:10 # I want to make a very long comment so that it will exceed the page and some parts will not show completely in the pdf file.
+print(x)
+```
+
+```         
+if it is in the markdown, will it just be the same? Yes, it is the same if you type a lot of things here. It doesnt show up.
+```
